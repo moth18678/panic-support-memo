@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>パニック対策メモ</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--text:#263238;--muted:#66747d;--line:#dce3e7;--accent:#4f7f8f;--soft:#e8f1f4}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;line-height:1.65}
+header{background:#fff;border-bottom:1px solid var(--line);padding:20px 16px}.head,main,footer{max-width:900px;margin:auto}.head h1{margin:0;font-size:25px}.head p{margin:3px 0 0;color:var(--muted);font-size:14px}
+nav{max-width:900px;margin:14px auto;display:flex;gap:8px;padding:0 16px;overflow:auto}nav button{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer}nav button.active{background:var(--accent);color:#fff}
+main{padding:0 16px}.screen{display:none}.screen.active{display:block}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+h2{font-size:19px;margin:0 0 10px}h3{font-size:16px;margin:18px 0 6px}.lead,.small{color:var(--muted)}.small{font-size:13px}
+.big{text-align:center;font-size:24px;font-weight:600;padding:12px 5px 20px}.notice{background:var(--soft);border-radius:12px;padding:13px 15px;margin:12px 0}
+.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.action{border:1px solid var(--line);background:#fff;border-radius:12px;padding:15px 10px;text-align:left;cursor:pointer}.action strong{display:block;font-size:16px}.action span{font-size:13px;color:var(--muted)}
+.primary,.secondary{font:inherit;border-radius:10px;padding:11px 15px;cursor:pointer}.primary{width:100%;border:0;background:var(--accent);color:#fff;font-weight:600}.secondary{border:1px solid var(--line);background:#fff}.danger{color:#a44;border-color:#e3c5c5}
+label{display:block;font-weight:600;margin:13px 0 5px}input,textarea{width:100%;font:inherit;border:1px solid var(--line);border-radius:9px;padding:10px;background:#fff;color:var(--text)}textarea{min-height:90px;resize:vertical}.range{display:flex;align-items:center;gap:12px}.range input{padding:0}.score{font-size:22px;font-weight:700;width:35px;text-align:center}
+.record{border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}.recordtop{display:flex;justify-content:space-between;color:var(--muted);font-size:13px}.empty{text-align:center;color:var(--muted);padding:20px}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}
+footer{padding:15px 16px 35px;color:var(--muted);font-size:12px}@media(max-width:600px){.actions{grid-template-columns:1fr}.big{font-size:21px}.card{padding:16px}}
+</style>
+</head>
+<body>
+<header><div class="head">
+<h1>🌿 パニック対策メモ</h1>
+<p>つらいときに、自分で決めておいた対処法や過去の記録を確認するためのメモ</p>
+</div></header>
+
+<nav>
+<button class="tab active" data-tab="now">今つらいとき</button>
+<button class="tab" data-tab="record">記録する</button>
+<button class="tab" data-tab="history">記録を見る</button>
+<button class="tab" data-tab="memo">自分用メモ</button>
+<button class="tab" data-tab="about">このツールについて</button>
+</nav>
+
+<main>
+<section id="now" class="screen active">
+<div class="card">
+<div class="big">今は、まず落ち着くことを優先して大丈夫。</div>
+<div class="notice">下から「今できそうなこと」を1つ選んでください。全部やる必要はありません。</div>
+<div class="actions">
+<button class="action" onclick="alert('安全な場所で姿勢を楽にして、少し休みます。')"><strong>🪑 座って休む</strong><span>安全な場所で姿勢を楽にする</span></button>
+<button class="action" onclick="alert('無理に大きく吸おうとせず、楽な呼吸を続けます。')"><strong>🌬 ゆっくり呼吸する</strong><span>無理のない呼吸をする</span></button>
+<button class="action" onclick="alert('飲める状況なら、少しずつ水分をとります。')"><strong>🥤 水分をとる</strong><span>少しずつ水分をとる</span></button>
+<button class="action" onclick="alert('可能なら刺激の少ない場所へ移動します。')"><strong>🚶 静かな場所へ</strong><span>可能な範囲で刺激を減らす</span></button>
+<button class="action" onclick="alert('必要なら信頼できる人や適切な窓口に連絡します。')"><strong>📱 誰かに連絡する</strong><span>一人で抱え込まない</span></button>
+<button class="action" onclick="alert('今すぐ結論を出さず、少し時間を置きます。')"><strong>⏱ 少し待つ</strong><span>今すぐ判断しなくても大丈夫</span></button>
+</div>
+</div>
+<div class="card"><h2>📝 自分用の対処メモ</h2><div id="preview"></div><button class="secondary" onclick="show('memo')">対処メモを編集する</button></div>
+<div class="card"><h2>⏱ 今の状態を記録する</h2><p class="small">入力できる範囲だけでOKです。</p><button class="primary" onclick="show('record')">記録画面を開く</button></div>
+</section>
+
+<section id="record" class="screen"><div class="card">
+<h2>📝 今の状態を記録</h2>
+<label>日時</label><input id="date" type="datetime-local">
+<label>今のつらさ（0〜10）</label><div class="range"><input id="score" type="range" min="0" max="10" value="5"><span id="scoreText" class="score">5</span></div>
+<label>今いる場所</label><input id="place" placeholder="例：自宅、外出先など">
+<label>きっかけ・状況（任意）</label><textarea id="trigger" placeholder="何をしていたか、何が気になったかなど"></textarea>
+<label>そのときの症状・状態（任意）</label><textarea id="symptoms" placeholder="自分に分かる範囲で"></textarea>
+<label>やったこと（任意）</label><textarea id="action" placeholder="休憩、水分、呼吸、移動など"></textarea>
+<label>その後どうなったか（任意）</label><textarea id="after" placeholder="落ち着いた、まだ続いている、○分後に楽になったなど"></textarea>
+<button class="primary" onclick="saveRecord()">記録を保存</button>
+</div></section>
+
+<section id="history" class="screen"><div class="card"><h2>📊 記録を見る</h2><p class="lead">過去の記録を振り返るためのページです。</p><div id="historyList"></div></div>
+<div class="card"><h2>💾 データ</h2><div class="row"><button class="secondary" onclick="exportData()">バックアップを書き出す</button><label style="margin:0"><span class="secondary" style="display:block;text-align:center">バックアップを読み込む<input id="import" type="file" accept=".json" style="display:none"></span></label></div><p class="small">端末変更やブラウザのデータ消去に備えて保存できます。</p></div></section>
+
+<section id="memo" class="screen"><div class="card">
+<h2>🌿 自分用の対処メモ</h2>
+<p class="lead">自分に合う方法や、医療者から受けている指示などを自分用に整理できます。</p>
+<label>まずやること</label><textarea id="first" placeholder="例：座って休む、楽な呼吸をする、静かな場所へ移動する"></textarea>
+<label>自分に合う対処法</label><textarea id="coping" placeholder="自分が落ち着きやすい方法"></textarea>
+<label>自分に伝えたい言葉</label><textarea id="words" placeholder="例：急いで判断しなくていい。できる範囲でいい。"></textarea>
+<label>困ったときの連絡先・行動メモ（任意）</label><textarea id="contact" placeholder="必要な連絡先や、自分で決めている行動など"></textarea>
+<div class="notice">薬については、自己判断で変更する内容ではなく、医師・薬剤師から受けている指示を自分用にメモする使い方がおすすめです。</div>
+<button class="primary" onclick="saveMemo()">保存</button>
+</div></section>
+
+<section id="about" class="screen">
+<div class="card"><h2>このツールについて</h2><p>「パニックや強い不安が出たとき、何をすればいいか分からなくなる」「落ち着いたあとに、前回どうだったか確認したい」という場面を想定した個人用メモです。</p><p>診断・治療・緊急時の判断をするための医療ツールではありません。自分で決めておいた対処法や記録を確認するために使ってください。</p></div>
+<div class="card"><h2>使い方</h2><h3>1. 自分用メモを作る</h3><p>「自分用メモ」に、普段使いやすい対処法や自分へのメッセージを登録します。</p><h3>2. つらいときに開く</h3><p>「今つらいとき」から、登録したメモや簡単な行動を確認します。</p><h3>3. 落ち着いたら記録する</h3><p>記録を残しておくと、後から状況や、その後どうなったかを振り返れます。</p></div>
+<div class="card"><h2>データについて</h2><p>入力内容はこのブラウザのローカルストレージに保存されます。サーバーへ自動送信する仕組みではありません。</p><p>ブラウザのデータを削除した場合などに備えて、必要に応じてバックアップを書き出してください。</p><p class="small">共有PCでは、個人的な記録を保存したままにしないよう注意してください。</p></div>
+<div class="card"><h2>🚑 緊急時について</h2><p>強い症状が初めて出た場合、いつもと違う症状がある場合、生命に関わる可能性を感じる場合などは、このツールだけで判断せず、地域の救急・医療機関など適切な窓口に相談してください。</p></div>
+<div class="card"><h2>💬 要望・不具合</h2><p>使いにくいところや、追加してほしい機能があれば教えてください。</p>
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSfaellP9u0aSbFNAweJ6HjIRsChCjDVJ_TTRzFm08ty5uh1rQ/viewform?usp=publish-editor" target="_blank" rel="noopener"><button class="primary">要望・不具合を送る ↗</button></a></div>
+<div class="card"><h2>アップデート履歴</h2><div class="record"><strong>2026/09/29</strong><br>初版公開。状態記録、自分用メモ、履歴、バックアップ機能を追加。</div></div>
+</section>
+</main>
+<footer>このツールは個人用の記録・整理を目的としたものです。医療上の診断や治療の代わりにはなりません。</footer>
+
+<script>
+const KEY="panic_support_memo_v1";
+let data=JSON.parse(localStorage.getItem(KEY)||"null")||{records:[],memo:{first:"",coping:"",words:"",contact:""}};
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function show(id){
+ document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+ $(id).classList.add("active");
+ document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));
+ if(id==="history")renderHistory();if(id==="memo")loadMemo();if(id==="now")renderPreview();
+ scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".tab").forEach(x=>x.onclick=()=>show(x.dataset.tab));
+$("score").oninput=()=>$("scoreText").textContent=$("score").value;
+function setDate(){let d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());$("date").value=d.toISOString().slice(0,16)}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function nl(s){return esc(s).replace(/\n/g,"<br>")}
+function formatDate(v){let d=new Date(v);return isNaN(d)?v:d.toLocaleString("ja-JP",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}
+function saveRecord(){
+ data.records.unshift({id:Date.now(),date:$("date").value||new Date().toISOString(),score:+$("score").value,place:$("place").value.trim(),trigger:$("trigger").value.trim(),symptoms:$("symptoms").value.trim(),action:$("action").value.trim(),after:$("after").value.trim()});
+ save();["place","trigger","symptoms","action","after"].forEach(x=>$(x).value="");$("score").value=5;$("scoreText").textContent="5";setDate();alert("記録を保存しました。");show("history")
+}
+function renderHistory(){
+ let box=$("historyList");if(!data.records.length){box.innerHTML='<div class="empty">まだ記録がありません。</div>';return}
+ box.innerHTML=data.records.map(r=>`<div class="record"><div class="recordtop"><span>${formatDate(r.date)}</span><span>つらさ ${r.score}/10</span></div><strong>${esc(r.place||"場所未記入")}</strong>
+ ${r.trigger?`<p><b>きっかけ・状況</b><br>${nl(r.trigger)}</p>`:""}${r.symptoms?`<p><b>症状・状態</b><br>${nl(r.symptoms)}</p>`:""}${r.action?`<p><b>やったこと</b><br>${nl(r.action)}</p>`:""}${r.after?`<p><b>その後</b><br>${nl(r.after)}</p>`:""}
+ <button class="secondary danger" onclick="del(${r.id})">この記録を削除</button></div>`).join("")
+}
+function del(id){if(confirm("この記録を削除しますか？")){data.records=data.records.filter(r=>r.id!==id);save();renderHistory()}}
+function loadMemo(){let m=data.memo;$("first").value=m.first||"";$("coping").value=m.coping||"";$("words").value=m.words||"";$("contact").value=m.contact||""}
+function saveMemo(){data.memo={first:$("first").value.trim(),coping:$("coping").value.trim(),words:$("words").value.trim(),contact:$("contact").value.trim()};save();renderPreview();alert("自分用メモを保存しました。");show("now")}
+function renderPreview(){let m=data.memo;$("preview").innerHTML=`<div class="notice"><b>まずやること</b><br>${nl(m.first||"まだ登録されていません")}</div><p><b>自分に合う対処法</b><br>${nl(m.coping||"まだ登録されていません")}</p><p><b>自分に伝えたい言葉</b><br>${nl(m.words||"まだ登録されていません")}</p>`}
+function exportData(){let b=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="panic_support_memo_backup.json";a.click();URL.revokeObjectURL(a.href)}
+$("import").onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.records||!x.memo)throw 0;data=x;save();renderHistory();renderPreview();alert("バックアップを読み込みました。")}catch{alert("読み込めるバックアップではありません。")}};r.readAsText(f);e.target.value=""}
+setDate();renderPreview();
+</script>
+</body>
+</html>
